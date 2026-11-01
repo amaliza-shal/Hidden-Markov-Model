@@ -24,12 +24,11 @@ Data_clean/
   trim_rule_impact.csv     effect of the trimming rule
 data/<activity>/           raw Sensor Logger recordings
 figures/                   all graphs
-report/                    final report (PDF), Markdown version and template
+report/                    final report (PDF and Word)
 tests/test_hmm.py          tests for Viterbi and Baum-Welch
 videos/                    the four activity videos
 HMM_Activity_Recognition.ipynb   full notebook with outputs
 prepare_data.py            raw data to cleaned CSVs
-build_report.py            builds the report from the results
 requirements.txt
 ```
 
