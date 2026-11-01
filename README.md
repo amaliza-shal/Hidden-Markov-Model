@@ -1,47 +1,59 @@
-# HMM Activity Recognition
+# Human Activity Recognition with a Hidden Markov Model
 
-Formative 2 · Individual assignment · Amaliza Shalom
+**Author:** Amaliza Shalom · Formative 2 – Hidden Markov Models
 
-I recorded four activities on my phone (standing, walking, jumping, still) and recognise them with a Gaussian Hidden Markov Model written from scratch in NumPy.
+A Gaussian Hidden Markov Model, written from scratch in NumPy (Baum-Welch training, Viterbi decoding), that recognises four activities from phone accelerometer and gyroscope data: standing, walking, jumping and still.
 
-**Result:** 61 of 61 test windows and 12 of 12 unseen recordings correct. See the limitations below.
+| | |
+|---|---|
+| Device | iPhone 13, Sensor Logger 1.68 |
+| Sampling rate | Set to 10 ms, measured 99.45 Hz, no resampling needed |
+| Data | 60 recordings, 15 per activity |
+| Training data | 48 recordings |
+| Unseen test data | 12 recordings |
+| Test accuracy | 100 % (61/61 windows, 12/12 recordings) |
 
-- [Report (PDF)](report/Formative2_HMM_Report.pdf)
-- [Notebook](notebook/HMM_Activity_Recognition.ipynb)
-- Videos: [Standing](https://drive.google.com/file/d/1Tq2zAthdj9Cif8v5GVrvESlW4DmJisJH/view) · [Walking](https://drive.google.com/file/d/1KrsBVEBJWtxzm3FCOFKxx6KnelZwWZ2k/view) · [Jumping](https://drive.google.com/file/d/1xfj1qU6cLenPN_gOmMwR0pfqNTGwYzM5/view) · [Still](https://drive.google.com/file/d/1uLwOWfO70HMY1DmjN6t-fPd8Pg7eEMzD/view)
-
-## Structure
+## Repository structure
 
 ```
-data/           raw Sensor Logger recordings, one folder per activity
-Data_clean/     cleaned CSVs, split into train/ and test/
-notebook/       HMM code, plots and tests, with outputs saved
-scripts/        data cleaning and report build
-figures/        plots
-artifacts/      saved model and metrics
-report/         final report
-videos/         the four activity videos
+Data_clean/
+  train/<activity>/        cleaned training recordings
+  test/<activity>/         cleaned unseen test recordings
+  manifest.csv             details of each file
+  excluded.csv             files left out (none)
+  trim_rule_impact.csv     effect of the trimming rule
+data/<activity>/           raw Sensor Logger recordings
+figures/                   all graphs
+report/                    final report (PDF), Markdown version and template
+tests/test_hmm.py          tests for Viterbi and Baum-Welch
+videos/                    the four activity videos
+HMM_Activity_Recognition.ipynb   full notebook with outputs
+prepare_data.py            raw data to cleaned CSVs
+build_report.py            builds the report from the results
+requirements.txt
 ```
+
+CSV columns: `timestamp`, `ax`, `ay`, `az` (m/s², gravity removed), `gx`, `gy`, `gz` (rad/s).
+
+## Videos
+
+| Activity | Video |
+|---|---|
+| Standing | https://drive.google.com/file/d/1Tq2zAthdj9Cif8v5GVrvESlW4DmJisJH/view |
+| Walking | https://drive.google.com/file/d/1KrsBVEBJWtxzm3FCOFKxx6KnelZwWZ2k/view |
+| Jumping | https://drive.google.com/file/d/1xfj1qU6cLenPN_gOmMwR0pfqNTGwYzM5/view |
+| Still | https://drive.google.com/file/d/1uLwOWfO70HMY1DmjN6t-fPd8Pg7eEMzD/view |
 
 ## How to run
 
 ```bash
 pip install -r requirements.txt
-python scripts/prepare_data.py
-jupyter nbconvert --to notebook --execute --inplace notebook/HMM_Activity_Recognition.ipynb
-python scripts/build_report.py
+python prepare_data.py                  # rebuilds Data_clean/
+python -m unittest discover tests       # runs the tests
+jupyter notebook HMM_Activity_Recognition.ipynb
 ```
 
-## Data
-
-iPhone 13, Sensor Logger 1.68, measured at 99.45 Hz. 60 recordings, none dropped.
-
-| Activity | Train files | Test files | Clean seconds |
-|---|---|---|---|
-| Standing | 12 | 3 | 80.2 |
-| Walking | 12 | 3 | 86.6 |
-| Jumping | 12 | 3 | 87.4 |
-| Still | 12 | 3 | 128.7 |
+Run the notebook from the repository root.
 
 ## Limitations
 
