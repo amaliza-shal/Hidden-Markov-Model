@@ -70,13 +70,13 @@ Every window is correct. Viterbi keeps each recording in one state, so recording
 
 In A, every state has a self-transition of {{A_walk}} and every switch sits at the floor. Each recording holds one activity, so A never saw a change. It can't say how people really switch between activities.
 
-![Emission parameters](../figures/emission_parameters.png)
+![Emission parameters](../figures/emission_probabilities.png)
 
 *Figure 3. Left: state means of the 10 most discriminative features. Right: emission densities for {{ss_feature}}, the best standing/still separator.*
 
 Jumping is far above the others on intensity, with walking in between. The best feature for separating standing and still is `{{ss_feature}}`, and it makes physical sense. On a surface the gyroscope reads mostly sensor noise, spread across all frequencies, so entropy is high (median 6.0). In a hand, slow sway puts the energy into a few frequencies, so entropy is low (median 2.7).
 
-![Decoded sequence](../figures/decoded_sequence.png)
+![Decoded sequence](../figures/decoded_sequences.png)
 
 *Figure 4. Viterbi output (red) and true activity (grey) for each test recording, shown one after another.*
 
