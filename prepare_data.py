@@ -4,12 +4,12 @@ Raw data is never modified. Each recording is read either from its extracted fol
 (data/<activity>/<Name>/) or directly from its zip (data/<activity>/<Name>-<timestamp>.zip).
 
 Outputs
-    Data_clean/train/, Data_clean/test/   one CSV per recording: timestamp, ax, ay, az, gx, gy, gz
+    Data_clean/train/<activity>/, Data_clean/test/<activity>/   one CSV per recording: timestamp, ax, ay, az, gx, gy, gz
     Data_clean/manifest.csv               per-file provenance and quality control
     Data_clean/excluded.csv               recordings left out, with the reason and evidence
     Data_clean/trim_rule_impact.csv       what a fixed 1.5 s / 1.5 s trim with a 5 s minimum would keep
 
-Run from the repository root:  python scripts/prepare_data.py
+Run from the repository root:  python prepare_data.py
 """
 import io
 import re
@@ -19,7 +19,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(__file__).resolve().parent
 RAW = ROOT / "data"
 OUT = ROOT / "Data_clean"
 
@@ -149,11 +149,12 @@ def main():
 
     for split in ("train", "test"):
         d = OUT / split
-        d.mkdir(parents=True, exist_ok=True)
-        for f in d.glob("*.csv"):
+        for f in d.rglob("*.csv"):
             f.unlink()
+        for act in ACTIVITIES:
+            (d / act).mkdir(parents=True, exist_ok=True)
     for _, r in man.iterrows():
-        r["_df"].to_csv(OUT / r["split"] / r["new_name"], index=False)
+        r["_df"].to_csv(OUT / r["split"] / r["activity"] / r["new_name"], index=False)
 
     cols = ["new_name", "original_source", "recording", "activity", "split", "recording_time",
             "original_duration_s", "duration_s", "original_rows", "n_samples", "measured_hz",

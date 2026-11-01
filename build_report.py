@@ -1,10 +1,10 @@
 """Fill report/report_template.md with the executed notebook results and render it to PDF.
 
-Every number in the report comes from artifacts/metrics.json, figures/results_table.csv or
+Every number in the report comes from artifacts/metrics.json, artifacts/results_table.csv or
 Data_clean/manifest.csv, so nothing is typed by hand. The script also checks that the video links
 open without a login, and that the PDF is 4-5 pages.
 
-Run from the repository root after executing the notebook:  python scripts/build_report.py
+Run from the repository root after executing the notebook:  python build_report.py
 """
 import json
 import os
@@ -20,7 +20,7 @@ import pandas as pd
 from fpdf import FPDF, TextStyle
 from pypdf import PdfReader
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(__file__).resolve().parent
 FIG = ROOT / "figures"
 TEMPLATE = ROOT / "report" / "report_template.md"
 MD = ROOT / "report" / "Formative2_HMM_Report.md"
@@ -53,7 +53,7 @@ def link_is_public(url):
 
 def combine_figures():
     fig, axes = plt.subplots(1, 3, figsize=(15, 4.3), gridspec_kw={"width_ratios": [1, 1, 1.15]})
-    for ax, name in zip(axes, ["confusion_matrix.png", "transition_matrix.png", "baum_welch_convergence.png"]):
+    for ax, name in zip(axes, ["confusion_matrix.png", "transition_matrix.png", "convergence_plot.png"]):
         ax.imshow(mpimg.imread(FIG / name))
         ax.axis("off")
     fig.tight_layout()
@@ -71,7 +71,7 @@ def render():
     m = json.loads((ROOT / "artifacts" / "metrics.json").read_text(encoding="utf-8"))
     man = pd.read_csv(ROOT / "Data_clean" / "manifest.csv")
     impact = pd.read_csv(ROOT / "Data_clean" / "trim_rule_impact.csv")
-    res = pd.read_csv(FIG / "results_table.csv")
+    res = pd.read_csv(ROOT / "artifacts" / "results_table.csv")
 
     g = {s: man[man.activity == s] for s in STATES}
     ds = pd.DataFrame({
@@ -109,7 +109,7 @@ def render():
 
 IMG_WIDTH = {  # mm
     "sample_signals.png": 145, "report_cm_transition.png": 172,
-    "emission_parameters.png": 165, "decoded_sequence.png": 172}
+    "emission_probabilities.png": 165, "decoded_sequences.png": 172}
 
 
 def to_html(text):
